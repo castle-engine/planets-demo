@@ -4,7 +4,8 @@
 
 The code loads a couple of (static) 3D models:
 
-- data/earth_and_light.x3d
+- data/camera_and_light.x3d
+- data/earth.x3d
 - data/moon.x3d
 - data/satellite.x3d
 
@@ -13,7 +14,7 @@ Each model is loaded to a `TCastleScene` instance, which can be animated
 TCastleScene descends from TCastleTransform).
 
 We also access the light source transformation (`Transform` node in X3D,
-`TTransformNode` in Pascal) inside the `data/earth_and_light.x3d`
+`TTransformNode` in Pascal) inside the `data/camera_and_light.x3d`
 and animate it.
 
 ## Alternative ways
@@ -23,14 +24,20 @@ There are various alternative ways of doing this
 Basically, it's your choice (and, in simple cases, it doesn't matter
 for performance) how do you split your world in models.
 
-- Instead of 3 separate models, we could create only 1 model,
+- Instead of a couple of separate models, we could create only one model,
   like `data/planets.x3d`. And load it to a single TCastleScene.
 
-  In this case the moon and satellite would be animated by finding
-  their TTransformNode.
+  In this case the earth, the moon and the satellite would be animated
+  by finding their `TTransformNode`. Just like the sun is animated right now.
+
+  Note that in case of an object composed from a couple of Blender objects
+  (like the satellite right now) you could use Blender parent-child reliationship,
+  which is exported to a proper transformation hierarchy in X3D.
+  This way the code always needs to update only a single `TTransformNode`
+  to animate whole object (like a satellite).
 
 - We could even design the whole animation in Blender,
-  and then export to `data/planets.castle-anim-frames`.
+  and then export it to `data/planets.castle-anim-frames`.
 
   This way the code wouldn't have to do much:
   you would just load `data/planets.castle-anim-frames` into a single
@@ -38,32 +45,30 @@ for performance) how do you split your world in models.
 
 *As for the light source:*
 
-Note that
-
-- The light source doesn't have to be in the same scene as Earth.
-  It only has to be in the scene set as `SceneManager.MainScene`
-  (to shine on all other scenes, otherwise the light shines only
-  on other objects within the same TCastleScene).
+Note that this is a crazy CGE demo :), it doesn't try to present what
+is actually happening with the earth, the moon and the sun.
 
 - The sun (point light) is orbiting the Earth in this demo.
-  IOW, ignoring almost 500 years of science
+  Ignoring almost 500 years of science
   ( https://en.wikipedia.org/wiki/Nicolaus_Copernicus ),
   the Earth is in the middle of the coordinate system,
   and the sun rotates around it :)
   I wanted to keep the demo as simple as possible, and this seemed like a good idea.
 
 - The animated rotations are just random craziness :)
+  They are actually different each time you run the application.
   I didn't bother making them real.
   The way sun orbits around the earth has no relation with
   the day and night cycle, and seasons of the year, that you are familiar with :)
 
 *As for the camera:*
 
-Right now `data/earth_and_light.x3d` contains a default camera view
+Right now `data/camera_and_light.x3d` contains a default camera view
 (exported by Blender). This seemed easiest to use, but the camera could
 be initialized differently. E.g. you could set from code
 `SceneManager.WalkCamera.SetView(...)` or
 `SceneManager.ExamineCamera.SetView(...)`.
+You don't need a camera in the Blender file.
 
 ## Compiling
 

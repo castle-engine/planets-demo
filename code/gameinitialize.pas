@@ -8,27 +8,32 @@ implementation
 uses SysUtils,
   CastleWindow, CastleScene, CastleLog, CastleColors, CastleControls,
   CastleUIControls, CastleApplicationProperties, CastleVectors,
-  X3DNodes,
+  X3DNodes, CastleBoxes,
   GameAnimationUtils;
 
 var
   Window: TCastleWindow;
   LabelFps: TCastleLabel;
-  SceneEarth, SceneMoon, SceneSatellite: TCastleScene;
-  LightTransform: TTransformNode;
+  SceneCameraAndLight, SceneEarth, SceneMoon, SceneSatellite: TCastleScene;
+  LightTransform, LightSphereTransform: TTransformNode;
 
   { Animation parameters. }
   LightOrbit, MoonOrbit, SatelliteOrbit: TOrbitAnimation;
-  MoonRotation, SatelliteRotation: TRotationAnimation;
+  EarthRotation, MoonRotation, SatelliteRotation: TRotationAnimation;
 
 { routines ------------------------------------------------------------------- }
 
 { Set translations and rotations of all animated items. }
 procedure UpdateTransformations;
 begin
+  { Both LightTransform and LightSphereTransform have the same Translation. }
   LightTransform.Translation := LightOrbit.Translation;
+  LightSphereTransform.Translation := LightOrbit.Translation;
+
   SceneMoon.Translation := MoonOrbit.Translation;
   SceneSatellite.Translation := SatelliteOrbit.Translation;
+
+  SceneEarth.Rotation := EarthRotation.Rotation;
   SceneMoon.Rotation := MoonRotation.Rotation;
   SceneSatellite.Rotation := SatelliteRotation.Rotation;
 end;
@@ -44,6 +49,7 @@ begin
   LightOrbit.Update(SecondsPassed);
   MoonOrbit.Update(SecondsPassed);
   SatelliteOrbit.Update(SecondsPassed);
+  EarthRotation.Update(SecondsPassed);
   MoonRotation.Update(SecondsPassed);
   SatelliteRotation.Update(SecondsPassed);
 
@@ -63,17 +69,22 @@ begin
   LabelFps.Color := Yellow;
   Window.Controls.InsertFront(LabelFps);
 
-  { Load earth and light. }
-  SceneEarth := TCastleScene.Create(Application);
-  SceneEarth.Load('castle-data:/earth_and_light.x3d');
-  SceneEarth.Attributes.PhongShading := true;
-  Window.SceneManager.Items.Add(SceneEarth);
-  { Thanks to ProcessEvents you can animate stuff within, like light }
-  SceneEarth.ProcessEvents := true;
+  { Load camera and light. }
+  SceneCameraAndLight := TCastleScene.Create(Application);
+  SceneCameraAndLight.Load('castle-data:/camera_and_light.x3d');
+  Window.SceneManager.Items.Add(SceneCameraAndLight);
+  { Thanks to ProcessEvents you can animate stuff within, like light. }
+  SceneCameraAndLight.ProcessEvents := true;
   { Set as MainScene (determines default camera, lights that shine on all other scenes) }
-  Window.SceneManager.MainScene := SceneEarth;
-  { Get Sun transformation }
-  LightTransform := SceneEarth.Node('Sun_TRANSFORM') as TTransformNode;
+  Window.SceneManager.MainScene := SceneCameraAndLight;
+  { Find named Transform nodes in the camera_and_light.x3d  }
+  LightTransform := SceneCameraAndLight.Node('Sun_TRANSFORM') as TTransformNode;
+  LightSphereTransform := SceneCameraAndLight.Node('SunSphere_TRANSFORM') as TTransformNode;
+
+  { Load earth. }
+  SceneEarth := TCastleScene.Create(Application);
+  SceneEarth.Load('castle-data:/earth.x3d');
+  Window.SceneManager.Items.Add(SceneEarth);
 
   { Load moon. }
   SceneMoon := TCastleScene.Create(Application);
@@ -85,12 +96,22 @@ begin
   SceneSatellite.Load('castle-data:/satellite.x3d');
   Window.SceneManager.Items.Add(SceneSatellite);
 
+  { Make rotations made by ExamineCamera nice.
+    Otherwise ExamineCamera pivot of rotations would be calculated based
+    on current bounding boxes at start, the camera doesn't know
+    that it will all be animated and the center should be in (0,0,0). }
+  Window.SceneManager.ExamineCamera.ModelBox := Box3D(
+    Vector3(-10, -10, -10),
+    Vector3( 10,  10,  10)
+  );
+
   { Initialize animations. }
-  LightOrbit := TOrbitAnimation.Create(Application, 7);
+  LightOrbit := TOrbitAnimation.Create(Application, 7); // 1.1);
   MoonOrbit := TOrbitAnimation.Create(Application, 3);
   SatelliteOrbit := TOrbitAnimation.Create(Application, 4);
-  MoonRotation := TRotationAnimation.Create(Application);
-  SatelliteRotation := TRotationAnimation.Create(Application);
+  EarthRotation := TRotationAnimation.Create(Application, 0.2);
+  MoonRotation := TRotationAnimation.Create(Application, 0.8);
+  SatelliteRotation := TRotationAnimation.Create(Application, 1);
 
   UpdateTransformations;
 end;

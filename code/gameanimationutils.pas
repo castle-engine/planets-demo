@@ -26,7 +26,8 @@ type
     Axis: TVector3;
   public
     { Randomize everything. }
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(const AOwner: TComponent;
+      const RotationSpeedMultiplier: Single); reintroduce;
     procedure Update(const SecondsPassed: Single);
     { Current rotation, axis and angle
       (compatible with TCastleTransform.Rotation or TTransformNode.Rotation). }
@@ -70,11 +71,12 @@ end;
 
 { TRotationAnimation --------------------------------------------------------- }
 
-constructor TRotationAnimation.Create(AOwner: TComponent);
+constructor TRotationAnimation.Create(const AOwner: TComponent;
+  const RotationSpeedMultiplier: Single);
 begin
-  inherited;
+  inherited Create(AOwner);
   Axis := RandomAxis;
-  Speed := RandomFloatRange(3, 6);
+  Speed := RandomFloatRange(3, 5) * RotationSpeedMultiplier;
   // leave Angle initialized to 0
 end;
 
