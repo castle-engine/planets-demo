@@ -1,3 +1,8 @@
+# backups
 *~
 *.blend?
+
+# compilation output
 castle-engine-output/
+planets-demo
+*.exe
