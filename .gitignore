@@ -6,3 +6,8 @@
 castle-engine-output/
 planets-demo
 *.exe
+code/lib/
+
+# other
+*.lps
+*.log
