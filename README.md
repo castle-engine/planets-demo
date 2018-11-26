@@ -120,12 +120,16 @@ with this.
 Original textures authors and copyrights:
 
 - earth-textures/
-  Extracted from model on https://opengameart.org/content/earth
-  Created by Justin Nichol
-  License(s): CC-BY 3.0
+
+    Extracted from model on https://opengameart.org/content/earth
+
+    Created by Justin Nichol
+
+    License(s): CC-BY 3.0
 
 - moon-textures/
-  From http://planetpixelemporium.com/earth.html
+
+    From http://planetpixelemporium.com/earth.html
 
 Normal maps generated from height maps using
 http://cpetry.github.io/NormalMap-Online/ .
