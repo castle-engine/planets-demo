@@ -106,9 +106,9 @@ begin
   );
 
   { Initialize animations. }
-  LightOrbit := TOrbitAnimation.Create(Application, 4);
-  MoonOrbit := TOrbitAnimation.Create(Application, 2.5);
-  SatelliteOrbit := TOrbitAnimation.Create(Application, 1.5);
+  LightOrbit := TOrbitAnimation.Create(Application, 5);
+  MoonOrbit := TOrbitAnimation.Create(Application, 3);
+  SatelliteOrbit := TOrbitAnimation.Create(Application, 3);
   EarthRotation := TRotationAnimation.Create(Application, 0.2);
   MoonRotation := TRotationAnimation.Create(Application, 0.8);
   SatelliteRotation := TRotationAnimation.Create(Application, 1);
