@@ -27,8 +27,8 @@ for performance) how do you split your world in models.
 - Instead of a couple of separate models, we could create only one model,
   like `data/planets.x3d`. And load it to a single TCastleScene.
 
-  In this case the earth, the moon and the satellite would be animated
-  by finding their `TTransformNode`. Just like the sun is animated right now.
+  In this case the Earth, the Moon and the satellite would be animated
+  by finding their `TTransformNode`. Just like the Sun is animated right now.
 
   Note that in case of an object composed from a couple of Blender objects
   (like the satellite right now) you could use Blender parent-child reliationship,
@@ -46,19 +46,19 @@ for performance) how do you split your world in models.
 *As for the light source:*
 
 Note that this is a crazy CGE demo :), it doesn't try to present what
-is actually happening with the earth, the moon and the sun.
+is actually happening with the Earth, the Moon and the Sun.
 
-- The sun (point light) is orbiting the Earth in this demo.
+- The Sun (point light) is orbiting the Earth in this demo.
   Ignoring almost 500 years of science
   ( https://en.wikipedia.org/wiki/Nicolaus_Copernicus ),
   the Earth is in the middle of the coordinate system,
-  and the sun rotates around it :)
+  and the Sun rotates around it :)
   I wanted to keep the demo as simple as possible, and this seemed like a good idea.
 
 - The animated rotations are just random craziness :)
   They are actually different each time you run the application.
   I didn't bother making them real.
-  The way sun orbits around the earth has no relation with
+  The way Sun orbits around the Earth has no relation with
   the day and night cycle, and seasons of the year, that you are familiar with :)
 
 *As for the camera:*
@@ -92,6 +92,23 @@ see
 https://castle-engine.io/creating_data_blender.php and
 https://github.com/castle-engine/castle-engine/wiki/Blender .
 These additional textures nicely enhance how the planets look.
+
+Note: height maps (present on Earth and Moon models) are unused now.
+
+- Although they are present in Earth and Moon textures,
+  as alpha channel of their normal_map_combined_with_height_map_in_alpha.png
+  textures.
+
+- They could be used for "Steep parallax mapping (with optional self-shadowing)",
+  all you need to do to activate it is to export from Blender with
+  "Displace" checkbox set in "Influence" settings
+  for normal_map_combined_with_height_map_in_alpha.png.
+
+- ...But the "Steep parallax mapping (with optional self-shadowing)" didn't actually
+  look good on these planet models. So I resigned from it.
+
+- So we use only a classic bump mapping,
+  looking only at RGB channels of normal_map_combined_with_height_map_in_alpha.png.
 
 ## Authors
 
